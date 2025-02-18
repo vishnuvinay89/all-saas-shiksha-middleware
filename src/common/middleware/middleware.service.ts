@@ -39,15 +39,16 @@ export class MiddlewareServices {
     private permissionService: PermissionsService,
     private configService: ConfigService,
     private dataValidationService: DataValidationService,
-  ) {}
+  ) { }
 
   async use(req: Request, res: Response, next: NextFunction) {
     try {
+
       const originalUrl = req.originalUrl;
       let reqUrl = originalUrl.split('?')[0];
       const withPattern = this.matchUrl(reqUrl);
       reqUrl = withPattern || reqUrl;
-      if(req.headers['authorization']) {
+      if (req.headers['authorization']) {
         const token = req.headers['authorization'].split('.')[1];
         const decodedPayload = atob(token); // Decode the base64 payload
         const parsedPayload = JSON.parse(decodedPayload);
@@ -61,6 +62,7 @@ export class MiddlewareServices {
       }
       //check for public api
       if (!publicAPI.includes(reqUrl)) {
+
         //check for tenantId
         const tenantId: any = req.headers['tenantid'];
         if (!tenantId?.trim()) {
@@ -68,8 +70,10 @@ export class MiddlewareServices {
         }
         // Basic check if user is a valid keyCloack user, if tenant ID present in the request
         const context = new ExecutionContextHost([req, res, next]);
+        // console.log("CONTEXT: ", context);
         // Create an instance of the JwtAuthGuard
         const guard = new JwtAuthGuard(this.reflector);
+        // console.log("GUARD: ", guard);
         // custom jwt.strategy will get executed
         await guard.canActivate(context);
       }
@@ -79,6 +83,7 @@ export class MiddlewareServices {
           throw new BadRequestException('Academic year id not found');
         }
       }
+
       if (apiList[reqUrl]) {
         // check API is whitelisted
         if (!apiList[reqUrl][req.method.toLowerCase()]) {
@@ -356,7 +361,8 @@ export class MiddlewareServices {
           req.userId,
           req.headers['tenantid'],
         );
-      if (!rolesOfTenant && rolesOfTenant.response.error == 'Unauthorized') {
+      console.log(rolesOfTenant);
+      if (!rolesOfTenant && rolesOfTenant?.response?.error == 'Unauthorized') {
         return reject("User doesn't have appropriate privilege");
       }
 
