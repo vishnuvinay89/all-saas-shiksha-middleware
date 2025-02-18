@@ -13,7 +13,7 @@ export class PermissionsService {
     private readonly userRolesMapping: Repository<UserRolesMapping>,
     @Inject(CACHE_MANAGER) private cacheService: Cache,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async getUserPrivilegesAndRoles(userId: string, tenantId: string) {
     const query = `SELECT "UserRolesMapping"."userId", "UserRolesMapping"."roleId", "UserRolesMapping"."tenantId" AS tenant_id,
@@ -83,7 +83,7 @@ export class PermissionsService {
 
   async getUserRolesForTenant(userId: string, tenantId: string) {
     // Check if user data is cached
-    let cachedData: any = await this.cacheService.get(userId);
+    let cachedData: any = await this.cacheService.get(userId + tenantId);
     if (!cachedData) {
       // If not cached, fetch and cache user privileges and roles
       const userPrivilegesAndRoles: any = await this.getUserPrivilegesAndRoles(
@@ -95,22 +95,22 @@ export class PermissionsService {
           'User does not have any privileges in the Tenant',
         );
       }
-      await this.cacheService.set(userId, userPrivilegesAndRoles);
+      await this.cacheService.set(userId + tenantId, userPrivilegesAndRoles);
       cachedData = userPrivilegesAndRoles;
     }
     // Return cached roles for the specified tenant
     return cachedData.roles[tenantId];
   }
 
-  async isSuperAdmin (userId) {
+  async isSuperAdmin(userId) {
 
     const roleCodes = await this.userRolesMapping.query(
-    `SELECT r."code"
+      `SELECT r."code"
       FROM "UserRolesMapping" urm
       JOIN "Roles" r ON urm."roleId" = r."roleId"
       WHERE urm."userId" = $1 AND r."code" = 'super_admin';
-      `,[userId],
+      `, [userId],
     );
-  return roleCodes.length > 0;
+    return roleCodes.length > 0;
   }
 }

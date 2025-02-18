@@ -70,10 +70,10 @@ export class MiddlewareServices {
         }
         // Basic check if user is a valid keyCloack user, if tenant ID present in the request
         const context = new ExecutionContextHost([req, res, next]);
-        // console.log("CONTEXT: ", context);
+
         // Create an instance of the JwtAuthGuard
         const guard = new JwtAuthGuard(this.reflector);
-        // console.log("GUARD: ", guard);
+
         // custom jwt.strategy will get executed
         await guard.canActivate(context);
       }
@@ -361,7 +361,6 @@ export class MiddlewareServices {
           req.userId,
           req.headers['tenantid'],
         );
-      console.log(rolesOfTenant);
       if (!rolesOfTenant && rolesOfTenant?.response?.error == 'Unauthorized') {
         return reject("User doesn't have appropriate privilege");
       }
@@ -369,7 +368,6 @@ export class MiddlewareServices {
       const isAuthorized =
         rolesForURL.filter((role: string) => rolesOfTenant?.includes(role))
           .length > 0;
-
       if (isAuthorized) {
         return resolve(true);
       }
