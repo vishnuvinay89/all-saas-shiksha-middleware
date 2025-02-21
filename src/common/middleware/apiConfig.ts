@@ -216,6 +216,11 @@ export const apiList = {
       // ROLE_CHECK: rolesGroup.admin_team_leader_teacher,
     },
   }),
+  '/user/v1/learner-forgot-password': createRouteObject({
+    post: {
+        ROLE_CHECK: rolesGroup.common,
+    },
+  }),
   //all
   '/user/v1/reset-password': createRouteObject({
     post: {
