@@ -182,6 +182,12 @@ export const apiList = {
       ROLE_CHECK: rolesGroup.common,
     },
   }),
+  '/user/v1/bulk-create': createRouteObject({
+    post: {
+      // PRIVILEGE_CHECK: privilegeGroup.users.create,
+      ROLE_CHECK: rolesGroup.common,
+    },
+  }),
   '/user/v1/read/:userId': createRouteObject({
     get: {
       // PRIVILEGE_CHECK: privilegeGroup.users.read,
