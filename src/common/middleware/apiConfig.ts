@@ -152,6 +152,15 @@ export const apiList = {
   '/user/v1/tenant/read': createRouteObject({
     get: {},
   }),
+  '/user/v1/user-approval/read': createRouteObject({
+    get: {},
+  }),
+  '/user/v1/user-approval/create': createRouteObject({
+    post: {},
+  }),
+  '/user/v1/user-approval/update/:approvalId': createRouteObject({
+    put: {},
+  }),
   '/user/v1/invitation/sendinvite': createRouteObject({
     post: {
       ROLE_CHECK: rolesGroup.super_and_tenant_admin,
@@ -1569,6 +1578,9 @@ export const urlPatterns = Object.keys(apiList);
 //add public api
 export const publicAPI = [
   // no check of auth
+  '/user/v1/user-approval/read',
+  '/user/v1/user-approval/create',
+  '/user/v1/user-approval/update/:approvalId',
   '/user/v1/auth',
   '/user/v1/cohort/search',
   '/user/v1/tenant/create',
